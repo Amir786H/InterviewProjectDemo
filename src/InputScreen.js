@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { TextInput, Button } from "react-native-paper";
-import { StyleSheet, Text, Image, View, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, Text, Image, View, TouchableOpacity, Platform, PermissionsAndroid } from "react-native";
 import {
   launchCamera,
   launchImageLibrary
@@ -10,7 +10,7 @@ export default function InputScreen({ navigation }) {
 
   const [name, setName] = useState("")
   const [greetings, setGreetings] = useState("")
-  const [pic, setPic] = useState(false)
+  const [pic, setPic] = useState("")
   const [filePath, setFilePath] = useState({});  //Image picker
 
 
@@ -84,13 +84,14 @@ export default function InputScreen({ navigation }) {
           alert(response.errorMessage);
           return;
         }
-        console.log('base64 -> ', response.base64);
-        console.log('uri -> ', response.uri);
-        console.log('width -> ', response.width);
-        console.log('height -> ', response.height);
-        console.log('fileSize -> ', response.fileSize);
-        console.log('type -> ', response.type);
-        console.log('fileName -> ', response.fileName);
+        console.log('base64 -> ', response.assets[0].base64);
+        console.log('uri -> ', response.assets[0].uri);
+        console.log('width -> ', response.assets[0].width);
+        console.log('height -> ', response.assets[0].height);
+        console.log('fileSize -> ', response.assets[0].fileSize);
+        console.log('type -> ', response.assets[0].type);
+        console.log('fileName -> ', response.assets[0].fileName);
+        setPic(response.assets[0].uri);
         setFilePath(response);
       });
     }
@@ -104,7 +105,8 @@ export default function InputScreen({ navigation }) {
     // alert(value,'  ', greetings)
     let messageObj = {
       name: name,
-      greetings: greetings
+      greetings: greetings,
+      pic: pic
     }
     navigation.navigate("OutputScreen", { data: messageObj })
   }
@@ -155,5 +157,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#B39DDB',
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+  buttonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 5,
+    marginVertical: 10,
+    width: 250,
+  },
+  textStyle: {
+    padding: 10,
+    color: 'black',
+    textAlign: 'center',
+  },
 })
